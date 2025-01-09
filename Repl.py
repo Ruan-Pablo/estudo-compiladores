@@ -1,5 +1,7 @@
 from Lexer import Lexer
+#from Parser import Parser
 from cmd import Cmd
+#from SemanticVisitor import Visitor
 from recursivo_desc import RecDescendente
 
 class Repl(Cmd):
@@ -46,8 +48,8 @@ class Repl(Cmd):
         #    return None, error
         #print(f'Parser: {semanticNode}')
         parser = RecDescendente(tokens)
-        valido, error = parser.start()
-        return valido, error
+        semanticNode, error = parser.start()
+        return semanticNode, error
     
     def analisador(self, linha):
         resultado, error = self.run(linha)

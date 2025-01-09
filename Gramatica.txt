@@ -16,3 +16,10 @@ FLOAT é um float qualquer
 ID é qualquer identificador
 LET é a palavra reservada let
 STRING algo entre aspas
+
+// o * no final quer dizer que vai ocorrer 0 ou infinitas vezes
+E -> T((+|-)T)*
+T -> F((*|/)F)*
+F -> (+|-)*F
+F -> A
+A -> INT | ... | LPAR e RPAR

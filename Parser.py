@@ -1,20 +1,30 @@
-from Consts import Consts
+
+from Grammar import Grammar
 from Error import Error
 
-'''
-E->
-Ki
-'''
+# * Representa um controlador de arvore de sintaxe abstrata.
+# * Contém um node que aceita visita e um erro de sintaxe, que por padrão é None 
 
-class RecDescendente:
-    def __init__(self, toks):
-        self.tokens = toks
-        self.id = -1
-        self.current = None
-        self.txt = ''
-    def start(self):
-        self.nextToken()
-        a, e = self.E()
-        if self.currentTok().type != Consts.EOF:
-            return None, (e+":Erro nao $ no final")
-        return a, e
+# padrão - singleton: uma classe so produz uma instancia e sempre será a mesma referenciada
+#
+# Arvore Sintatica Abstrata
+class AstInfo:
+	singleton = None #declando que é static
+	def __init__(self):
+		if AstInfo.singleton!=None: 
+			raise Exception(f"{Error.singletonMsg(self)}.singletonInstance()'!")
+		self.error = None
+		self.node = None
+		AstInfo.singleton = self
+		
+# será codificado
+class Parser:
+	singleton = None
+	def __init__(self):
+		if Parser.singleton!=None: 
+			raise Exception(f"{Error.singletonMsg(self)}.instance()'!")
+		
+		self.__start([])
+		Parser.singleton = self
+
+
