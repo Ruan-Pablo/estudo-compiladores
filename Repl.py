@@ -1,7 +1,7 @@
 from cmd import Cmd
 from Lexer import Lexer
 from Parser import Parser
-#from SemanticVisitor import Visitor
+from SemanticVisitor import Visitor
 
 class Repl(Cmd):
     prompt = 'UFC> '
@@ -39,16 +39,16 @@ class Repl(Cmd):
             return None, error
         print(f'Lexer: {tokens}')
 
-        return tokens, error
+        # return tokens, error
         # Gerar AST
-        #parser = Parser.instance()
-        #astInfo = parser.Parsing(tokens)
-        #semanticNode, error = astInfo.node, astInfo.error
+        parser = Parser.instance()
+        astInfo = parser.Parsing(tokens)
+        semanticNode, error = astInfo.node, astInfo.error
 
-        #if error or not isinstance(semanticNode, Visitor): 
-        #    return None, error
-        #print(f'Parser: {semanticNode}')
-        #return semanticNode, error
+        if error or not isinstance(semanticNode, Visitor): 
+           return None, error
+        print(f'Parser: {semanticNode}')
+        return semanticNode, error
     
     def analisador(self, linha):
         resultado, error = self.run(linha)

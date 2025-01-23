@@ -1,5 +1,6 @@
 from Consts import Consts
 from SemanticVisitor import *
+from Error import Error
 
 class Grammar:
     def __init__(self, parser):
@@ -25,5 +26,12 @@ class Grammar:
     
 class Exp(Grammar): # A variable from Grammar G
     def Rule(self):
+        ast = self.GetParserManager()
+        tok = self.CurrentToken()
+
+        if tok.type in (Consts.INT, Consts.FLOAT):
+            self.NextToken()
+            return ast.success(NoNumber(tok))
+        return ast.fail(f"{Error.parserError} : '[({Consts.PLUS} | {Consts.MINUS})] ({Consts.INT}) | {Consts.FLOAT})'")
         return None, "Erro Implementar"
     
