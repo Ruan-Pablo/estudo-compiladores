@@ -1,8 +1,7 @@
-from Lexer import Lexer
-#from Parser import Parser
 from cmd import Cmd
+from Lexer import Lexer
+from Parser import Parser
 #from SemanticVisitor import Visitor
-from recursivo_desc import RecDescendente
 
 class Repl(Cmd):
     prompt = 'UFC> '
@@ -40,16 +39,16 @@ class Repl(Cmd):
             return None, error
         print(f'Lexer: {tokens}')
 
+        return tokens, error
         # Gerar AST
-        #astInfo = Parser.instance().Parsing(tokens)
+        #parser = Parser.instance()
+        #astInfo = parser.Parsing(tokens)
         #semanticNode, error = astInfo.node, astInfo.error
 
         #if error or not isinstance(semanticNode, Visitor): 
         #    return None, error
         #print(f'Parser: {semanticNode}')
-        parser = RecDescendente(tokens)
-        semanticNode, error = parser.start()
-        return semanticNode, error
+        #return semanticNode, error
     
     def analisador(self, linha):
         resultado, error = self.run(linha)

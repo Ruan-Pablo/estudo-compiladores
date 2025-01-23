@@ -1,4 +1,3 @@
-"""
 from Consts import Consts
 from SemanticVisitor import *
 
@@ -28,4 +27,3 @@ class Exp(Grammar): # A variable from Grammar G
     def Rule(self):
         return None, "Erro Implementar"
     
-"""
