@@ -39,14 +39,13 @@ class Repl(Cmd):
             return None, error
         print(f'Lexer: {tokens}')
 
-        # return tokens, error
         # Gerar AST
         parser = Parser.instance()
         astInfo = parser.Parsing(tokens)
         semanticNode, error = astInfo.node, astInfo.error
 
         if error or not isinstance(semanticNode, Visitor): 
-           return None, error
+            return None, error
         print(f'Parser: {semanticNode}')
         return semanticNode, error
     

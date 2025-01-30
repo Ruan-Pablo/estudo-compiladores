@@ -1,4 +1,6 @@
+#"""
 from Grammar import Grammar
+#"""
 from Error import Error
 
 # * Representa um controlador de arvore de sintaxe abstrata.

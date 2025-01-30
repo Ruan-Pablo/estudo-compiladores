@@ -1,11 +1,9 @@
 from Consts import Consts
 from SemanticVisitor import *
-from Error import Error
 
 class Grammar:
     def __init__(self, parser):
         self.parser = parser
-
     def Rule(self):
         return self.GetParserManager().fail(f"{Error.parserError}: Implementar suas regras de producao (Heranca de Grammar)!")
     
@@ -28,10 +26,16 @@ class Exp(Grammar): # A variable from Grammar G
     def Rule(self):
         ast = self.GetParserManager()
         tok = self.CurrentToken()
-
+        
         if tok.type in (Consts.INT, Consts.FLOAT):
             self.NextToken()
             return ast.success(NoNumber(tok))
-        return ast.fail(f"{Error.parserError} : '[({Consts.PLUS} | {Consts.MINUS})] ({Consts.INT}) | {Consts.FLOAT})'")
-        return None, "Erro Implementar"
+        
+        elif tok.type in (Consts.PLUS, Consts.MINUS):
+            self.NextToken()
+            exp = ast.registry(Exp(self.parser).Rule())
+            if ast.error: return ast
+            return ast.success(NoOpUnaria(tok, exp))
+
+        return ast.fail(f"{Error.parserError}: '[({Consts.PLUS}|{Consts.MINUS})] ({Consts.INT}' | '{Consts.FLOAT})'")
     

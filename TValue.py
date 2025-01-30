@@ -24,8 +24,6 @@ class TValue():
 	def __hash__(self) -> int:
 		return hash(self.value)
 
-# FAZER O BINARIO, NN SEI SE É AQUI
-
 class TNumber(TValue):
 	def __init__(self, value):
 		self.value = value
