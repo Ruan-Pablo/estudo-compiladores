@@ -88,6 +88,10 @@ class TList(TValue):
 	def add(self, other):
 		if isinstance(other, TList):
 			return TList(self.value + other.value).setMemory(self.memory), None
+
+		if isinstance(other, TString): 
+			return TList(self.value + [other.value]).setMemory(self.memory), None
+
 		
 		return super().add(other)
 	def copy(self):
