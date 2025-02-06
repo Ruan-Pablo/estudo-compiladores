@@ -78,3 +78,8 @@ class Parser:
 	def Parsing(self, _tokens):
 		self.__reset(_tokens)
 		return Grammar.StartSymbol(self)
+	
+	def Lookahead(self, nEsimo: int): # If index out of bound, make EOF (last) as default
+		idxNEsimo = self.tokIdx + nEsimo
+		maxSize = len(self.tokens)
+		return self.tokens[idxNEsimo if idxNEsimo < maxSize else maxSize - 1]

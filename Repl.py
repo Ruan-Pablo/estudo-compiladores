@@ -2,6 +2,7 @@ from cmd import Cmd
 from Lexer import Lexer
 from Parser import Parser
 from SemanticVisitor import Visitor
+from CodeGEN import CodeGEN
 
 class Repl(Cmd):
     prompt = 'UFC> '
@@ -47,7 +48,10 @@ class Repl(Cmd):
         if error or not isinstance(semanticNode, Visitor): 
             return None, error
         print(f'Parser: {semanticNode}')
-        return semanticNode, error
+
+        generate = CodeGEN()
+        managerRT = generate.run(semanticNode)
+        return managerRT.value, managerRT.error
     
     def analisador(self, linha):
         resultado, error = self.run(linha)

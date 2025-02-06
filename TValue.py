@@ -59,3 +59,21 @@ class TNumber(TValue):
 		return copy	
 	def __repr__(self):
 		return str(self.value)
+
+class TString(TValue):
+	def __init__(self, value):
+		self.value = value
+		self.setMemory()
+	def setMemory(self, memory=None):
+		self.memory = memory
+		return self
+	def add(self, other):
+		if isinstance(other, TString):
+			return TString(self.value + other.value).setMemory(self.memory), None
+		return super().add(other)
+	def copy(self):
+		copy = TString(self.value)
+		copy.setMemory(self.memory)
+		return copy		
+	def __repr__(self):
+		return f'"{str(self.value)}"'

@@ -90,3 +90,48 @@ class NoOpBinaria(Visitor):
 			return operator.fail(error)
 		else:
 			return operator.success(result)
+	
+	
+class NoVarAssign(Visitor):
+	def __init__(self, varNameTok, valueNode):
+		self.varNameTok = varNameTok
+		self.valueNode = valueNode
+
+	def visit(self, operator):
+		varName = self.varNameTok.value
+		value = operator.registry(self.valueNode.visit(operator))
+		if operator.error: return operator
+
+		operator.symbolTable.set(varName, value)
+		return operator.success(value)
+
+	def __repr__(self):
+		return f'({self.varNameTok}, {self.valueNode})'	
+	
+
+class NoVarAccess(Visitor):
+	def __init__(self, varNameTok):
+		self.varNameTok = varNameTok
+
+	def visit(self, operator):
+		varName = self.varNameTok.value
+		value = operator.symbolTable.get(varName)
+
+		if not value: return operator.fail(Error(f"{Error.runTimeError}: '{varName}' nao esta definido"))
+
+		value = value.copy()
+		return operator.success(value)
+
+	def __repr__(self):
+		return f'({self.varNameTok})'
+
+
+class NoString(Visitor):
+	def __init__(self, tok):
+		self.tok = tok
+
+	def visit(self, operator):
+		return operator.success(TString(self.tok.value).setMemory(operator))
+
+	def __repr__(self):
+		return f'{self.tok}'
