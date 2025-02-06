@@ -1,9 +1,11 @@
-<Exp> ::= [(MINUS | PLUS)] (INT | FLOAT)
-#<Exp> ::= <Term> ((MINUS | PLUS) <Term>)*
-#<Term> ::= <Factor> ((MUL | DIV) <Factor>)*
-#<Factor> ::= (PLUS | MINUS)* <Factor>
-#<Factor> ::= <Atom>
-#<Atom> ::= INT | FLOAT | LPAR <Exp> RPAR
+<Exp> ::= <Term> ((MINUS | PLUS) <Term>)*
+<Term> ::= <Factor> ((MUL | DIV) <Factor>)*
+<Factor> ::= (PLUS | MINUS)* <Factor>
+<Factor> ::= <Pow>
+<Pow> ::= <Atom> (<Pow> <Factor>)*
+<Atom> ::= INT | FLOAT | LPAR <Exp> RPAR
+
+
 
 PLUS é o +
 MUL é o *

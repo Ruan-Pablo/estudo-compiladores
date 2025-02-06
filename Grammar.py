@@ -25,17 +25,52 @@ class Grammar:
 class Exp(Grammar): # A variable from Grammar G
     def Rule(self):
         ast = self.GetParserManager()
+        node = ast.registry(NoOpBinaria.Perform(Term(self.parser), (Consts.PLUS, Consts.MINUS)))
+        if ast.error:
+            return ast.fail(f"{Error.parserError}: Esperado a '{Consts.INT}', '{Consts.FLOAT}', '{Consts.PLUS}', '{Consts.MINUS}', '{Consts.LPAR}'")
+        return ast.success(node)
+    
+
+class Term(Grammar): # A variable from Grammar G
+    def Rule(self):
+        return NoOpBinaria.Perform(Factor(self.parser), (Consts.MUL, Consts.DIV))
+
+
+class Factor(Grammar): # A variable from Grammar G
+    def Rule(self):
+        ast = self.GetParserManager()
         tok = self.CurrentToken()
-        
+
+        if tok.type in (Consts.PLUS, Consts.MINUS):
+            self.NextToken()
+            factor = ast.registry(Factor(self.parser).Rule())
+            if ast.error: return ast
+            return ast.success(NoOpUnaria(tok, factor))
+        return Pow(self.parser).Rule()
+
+
+class Pow(Grammar): # A variable from Grammar G
+    def Rule(self):
+        return NoOpBinaria.Perform(Atom(self.parser), (Consts.POW, ), Factor(self.parser))    
+
+class Atom(Grammar): # A variable from Grammar G
+    def Rule(self):
+        ast = self.GetParserManager()
+        tok = self.CurrentToken()
         if tok.type in (Consts.INT, Consts.FLOAT):
             self.NextToken()
             return ast.success(NoNumber(tok))
-        
-        elif tok.type in (Consts.PLUS, Consts.MINUS):
+        elif tok.type == Consts.LPAR:
             self.NextToken()
             exp = ast.registry(Exp(self.parser).Rule())
             if ast.error: return ast
-            return ast.success(NoOpUnaria(tok, exp))
+            if self.CurrentToken().type == Consts.RPAR:
+                self.NextToken()
+                return ast.success(exp)
+            else:
+                return ast.fail(f"{Error.parserError}: Esperando por '{Consts.RPAR}'")
+            
+        return ast.fail(f"{Error.parserError}: Esperado por '{Consts.INT}', '{Consts.FLOAT}', '{Consts.PLUS}', '{Consts.MINUS}', '{Consts.LPAR}'")
 
-        return ast.fail(f"{Error.parserError}: '[({Consts.PLUS}|{Consts.MINUS})] ({Consts.INT}' | '{Consts.FLOAT})'")
-    
+
+
