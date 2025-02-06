@@ -91,7 +91,7 @@ class NoOpBinaria(Visitor):
 		else:
 			return operator.success(result)
 	
-	
+
 class NoVarAssign(Visitor):
 	def __init__(self, varNameTok, valueNode):
 		self.varNameTok = varNameTok
@@ -135,3 +135,22 @@ class NoString(Visitor):
 
 	def __repr__(self):
 		return f'{self.tok}'
+	
+
+class NoList(Visitor):
+	def __init__(self, tok):
+		self.elements = tok
+
+	def visit(self, operator):
+		return operator.success(TList(self.elements.value).setMemory(operator))
+
+	def visit(self, operator):
+		lValue = []
+
+		for element_node in self.elements:
+			lValue.append(operator.registry(element_node.visit(operator)))
+		
+		return operator.success(TList(lValue).setMemory(operator))
+
+	def __repr__(self):
+		return f'{self.elements}'

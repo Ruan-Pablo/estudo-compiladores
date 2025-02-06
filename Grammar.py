@@ -96,7 +96,35 @@ class Atom(Grammar): # A variable from Grammar G
                 return ast.success(exp)
             else:
                 return ast.fail(f"{Error.parserError}: Esperando por '{Consts.RPAR}'")
+        elif tok.type == Consts.LSQUARE:
+            listExp = ast.registry(ListExp(self.parser).Rule())
+            if (ast.error!=None): return ast
+            return ast.success(listExp)
             
         return ast.fail(f"{Error.parserError}: Esperado por '{Consts.INT}', '{Consts.FLOAT}', '{Consts.PLUS}', '{Consts.MINUS}', '{Consts.LPAR}'")
 
 
+class ListExp(Grammar):
+    def Rule(self):
+        ast = self.GetParserManager()
+        elementNodes = [] # Checado em Atom: if (self.CurrentToken().type != Consts.LSQUARE): return ast.fail(f"{Error.parserError}: Esperando por '{Consts.LSQUARE}'")        
+        self.NextToken()
+
+        if (self.CurrentToken().type == Consts.RSQUARE): # TList vazia
+            self.NextToken()
+        else:
+            elementNodes.append(ast.registry(Exp(self.parser).Rule()))
+            if (ast.error!=None):
+                return ast.fail(f"{Error.parserError}: Esperando por '{Consts.RSQUARE}', '{Consts.KEYS[Consts.LET]}', '{Consts.INT}', '{Consts.FLOAT}', '{Consts.ID}', '{Consts.PLUS}', '{Consts.MINUS}', '{Consts.LPAR}', '{Consts.LSQUARE}'")
+            
+            while (self.CurrentToken().type == Consts.COMMA):
+                self.NextToken()
+
+                elementNodes.append(ast.registry(Exp(self.parser).Rule()))
+                if (ast.error!=None): return ast
+
+            if (self.CurrentToken().type != Consts.RSQUARE):
+                return ast.fail(f"{Error.parserError}: Esperando por '{Consts.COMMA}' ou '{Consts.RSQUARE}'")
+            self.NextToken()
+        
+        return ast.success(NoList(elementNodes))
