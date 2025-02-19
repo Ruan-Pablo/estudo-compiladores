@@ -1,6 +1,7 @@
 from Consts import Consts
 from SemanticVisitor import TNumber
 from Error import Error
+####################################### Tabela de simbolos (Symbol Table) #######################################
 class SymbolTable:
 	def __init__(self):
 		self.symbols = {}
@@ -11,6 +12,7 @@ class SymbolTable:
 		self.symbols[name] = value
 	def remove(self, name):
 		del self.symbols[name]
+####################################### Gerente de Memoria #######################################
 class MemoryManager:
 	singleton = None
 	def __init__(self):

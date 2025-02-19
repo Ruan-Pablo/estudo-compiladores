@@ -1,11 +1,11 @@
 <Exp> ::= <Term> ((MINUS | PLUS) <Term>)*
+<Exp> ::= [LET] ID EQ <Exp>
 <Term> ::= <Factor> ((MUL | DIV) <Factor>)*
 <Factor> ::= (PLUS | MINUS)* <Factor>
 <Factor> ::= <Pow>
 <Pow> ::= <Atom> (<Pow> <Factor>)*
-<Atom> ::= INT | FLOAT | LPAR <Exp> RPAR
-
-
+<Atom> ::= INT | FLOAT | STRING | ID | <ListExp> | LPAR <Exp> RPAR
+<ListExp> ::= LSQUARE [ <Exp> (COMMA <Exp>)* ] RSQUARE
 
 PLUS é o +
 MUL é o *

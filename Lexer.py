@@ -51,6 +51,7 @@ class Lexer:
             elif self.current == Consts.RPAR:
                 tokens.append(Token(Consts.RPAR))
                 self.__advance()
+            ##################################
             elif self.current in Consts.LETRAS + Consts.UNDER:
                 tokens.append(self.__makeId())
             elif self.current == Consts.LSQUARE:
@@ -65,6 +66,7 @@ class Lexer:
             elif self.current == Consts.EQ:
                 tokens.append(Token(Consts.EQ))
                 self.__advance()
+            ##############################
             else:
                 self.__advance()
                 return [], Error(f"{Error.lexerError}: lex-symbol '{self.current}' fail!")
@@ -109,7 +111,7 @@ class Lexer:
         self.__advance()
         return Token(Consts.STRING, stri)
 
-
+    ##############################
     def __makeId(self):
         lexema = ''
         while self.current != None and self.current in Consts.LETRAS_DIGITOS + Consts.UNDER:
@@ -118,3 +120,4 @@ class Lexer:
 
         tokType = Consts.KEY if lexema in Consts.KEYS else Consts.ID
         return Token(tokType, lexema)
+    ##############################

@@ -1,6 +1,7 @@
 #import abc
 from Error import Error
 from Consts import Consts
+from ASM import ASM
 
 class TValue(): 
 	def __init__(self) -> None:
@@ -59,7 +60,6 @@ class TNumber(TValue):
 		return copy	
 	def __repr__(self):
 		return str(self.value)
-
 class TString(TValue):
 	def __init__(self, value):
 		self.value = value
@@ -77,7 +77,7 @@ class TString(TValue):
 		return copy		
 	def __repr__(self):
 		return f'"{str(self.value)}"'
-	
+##############################
 class TList(TValue):
 	def __init__(self, value):
 		self.value = value
@@ -87,12 +87,9 @@ class TList(TValue):
 		return self
 	def add(self, other):
 		if isinstance(other, TList):
+			ASM.addRegReg(self.value, other.value, "eax", "ecx", 1)
+			ASM.swapRegReg("ecx", "ebx", 1)
 			return TList(self.value + other.value).setMemory(self.memory), None
-
-		if isinstance(other, TString): 
-			return TList(self.value + [other.value]).setMemory(self.memory), None
-
-		
 		return super().add(other)
 	def copy(self):
 		copy = TList(self.value)
@@ -101,3 +98,4 @@ class TList(TValue):
 	
 	def __repr__(self):
 		return f"{str(self.value)}"
+##############################

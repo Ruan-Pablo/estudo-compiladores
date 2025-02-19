@@ -49,9 +49,13 @@ class Repl(Cmd):
             return None, error
         print(f'Parser: {semanticNode}')
 
+        ##############################
+        # Semantica de tipos para tratar valores na AST (Abstract Syntax Tree), bem como RunTime ou Geracao de Codigo
         generate = CodeGEN()
-        managerRT = generate.run(semanticNode)
+        managerRT = generate.run(semanticNode) # Aqui chamamos o visit do node da AST, passando o operador de memoria
         return managerRT.value, managerRT.error
+
+        ############################## return semanticNode, error
     
     def analisador(self, linha):
         resultado, error = self.run(linha)

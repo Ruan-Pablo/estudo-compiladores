@@ -2,15 +2,15 @@ from Error import Error
 import abc
 from TValue import *
 from Consts import Consts
+from Memory import MemoryManager
 """
-
 # * Aqui são incluídos os NO's da AST (Abstract Syntax Tree).
 # * Eles aceitam visitas de operadores de memoria, visando semantica e controle de tipos (para execucao ou compilacao).
 # * Tipos: - criamos a classe TValue especializada em tratar tipos e valores.
 #         - Partimos da ideia de que todo dado possui um tipo e valor.
 
 """
-class Visitor(metaclass=abc.ABCMeta):
+class Visitor(metaclass=abc.ABCMeta): # OBS: os parametros "operator" sao do tipo "MemoryManager", para "runtime" e acesso a memória/tabela de simbolos
 	@abc.abstractmethod
 	def visit(self, operator): operator.fail(Error(f"{Error.runTimeError}: Nenhum metodo visit para a classe '{Error.classNameOf(self)}' foi definido!"))
 
@@ -31,20 +31,19 @@ class NoOpUnaria(Visitor):
 		self.opTok = opTok
 		self.node = node
 
-	def visit(self, ast):
-		num = ast.registry(self.node.visit(ast))
-		if ast.error: return ast
+	def visit(self, operator):
+		num = operator.registry(self.node.visit(operator))
+		if operator.error: return operator
 		error = None
 		if self.opTok.type == Consts.MINUS:
 			num, error = num.mult(TNumber(-1))
 		if error:
-			return ast.fail(error)
+			return operator.fail(error)
 		else:
-			return ast.success(num)
+			return operator.success(num)
 
 	def __repr__(self):
 		return f'({self.opTok}, {self.node})'
-
 
 class NoOpBinaria(Visitor):
 	def __init__(self, leftNode, opTok, rightNode):
@@ -61,7 +60,7 @@ class NoOpBinaria(Visitor):
 		ast = GVar1.GetParserManager()
 		op_bin_ou_esq = ast.registry(GVar1.Rule())
 		if ast.error: return ast
-		if GVar1.CurrentToken().type in ops:
+		while GVar1.CurrentToken().type in ops:
 			token_operador = GVar1.CurrentToken()
 			GVar1.NextToken()
 			lado_direito = ast.registry(GVar2.Rule())
@@ -90,8 +89,7 @@ class NoOpBinaria(Visitor):
 			return operator.fail(error)
 		else:
 			return operator.success(result)
-	
-
+##############################
 class NoVarAssign(Visitor):
 	def __init__(self, varNameTok, valueNode):
 		self.varNameTok = varNameTok
@@ -106,9 +104,8 @@ class NoVarAssign(Visitor):
 		return operator.success(value)
 
 	def __repr__(self):
-		return f'({self.varNameTok}, {self.valueNode})'	
+		return f'({self.varNameTok}, {self.valueNode})'
 	
-
 class NoVarAccess(Visitor):
 	def __init__(self, varNameTok):
 		self.varNameTok = varNameTok
@@ -124,8 +121,6 @@ class NoVarAccess(Visitor):
 
 	def __repr__(self):
 		return f'({self.varNameTok})'
-
-
 class NoString(Visitor):
 	def __init__(self, tok):
 		self.tok = tok
@@ -135,8 +130,7 @@ class NoString(Visitor):
 
 	def __repr__(self):
 		return f'{self.tok}'
-	
-
+##############################
 class NoList(Visitor):
 	def __init__(self, tok):
 		self.elements = tok

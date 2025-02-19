@@ -51,11 +51,9 @@ class Exp(Grammar): # A variable from Grammar G
         if ast.error: return ast
         return ast.success(NoVarAssign(varName, expr))
     
-
 class Term(Grammar): # A variable from Grammar G
     def Rule(self):
         return NoOpBinaria.Perform(Factor(self.parser), (Consts.MUL, Consts.DIV))
-
 
 class Factor(Grammar): # A variable from Grammar G
     def Rule(self):
@@ -69,11 +67,10 @@ class Factor(Grammar): # A variable from Grammar G
             return ast.success(NoOpUnaria(tok, factor))
         return Pow(self.parser).Rule()
 
-
 class Pow(Grammar): # A variable from Grammar G
     def Rule(self):
-        return NoOpBinaria.Perform(Atom(self.parser), (Consts.POW, ), Factor(self.parser))    
-
+        return NoOpBinaria.Perform(Atom(self.parser), (Consts.POW, ), Factor(self.parser))
+    
 class Atom(Grammar): # A variable from Grammar G
     def Rule(self):
         ast = self.GetParserManager()
@@ -87,6 +84,12 @@ class Atom(Grammar): # A variable from Grammar G
         elif(tok.type == Consts.STRING):
             self.NextToken()
             return ast.success(NoString(tok))
+        ##############################
+        elif tok.type == Consts.LSQUARE:
+            listExp = ast.registry(ListExp(self.parser).Rule())
+            if (ast.error!=None): return ast
+            return ast.success(listExp)
+        ##############################
         elif tok.type == Consts.LPAR:
             self.NextToken()
             exp = ast.registry(Exp(self.parser).Rule())
@@ -96,18 +99,14 @@ class Atom(Grammar): # A variable from Grammar G
                 return ast.success(exp)
             else:
                 return ast.fail(f"{Error.parserError}: Esperando por '{Consts.RPAR}'")
-        elif tok.type == Consts.LSQUARE:
-            listExp = ast.registry(ListExp(self.parser).Rule())
-            if (ast.error!=None): return ast
-            return ast.success(listExp)
             
         return ast.fail(f"{Error.parserError}: Esperado por '{Consts.INT}', '{Consts.FLOAT}', '{Consts.PLUS}', '{Consts.MINUS}', '{Consts.LPAR}'")
 
-
+##############################
 class ListExp(Grammar):
     def Rule(self):
         ast = self.GetParserManager()
-        elementNodes = [] # Checado em Atom: if (self.CurrentToken().type != Consts.LSQUARE): return ast.fail(f"{Error.parserError}: Esperando por '{Consts.LSQUARE}'")        
+        elementNodes = []
         self.NextToken()
 
         if (self.CurrentToken().type == Consts.RSQUARE): # TList vazia
